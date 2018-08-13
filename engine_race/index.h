@@ -15,11 +15,16 @@ namespace polar_race {
  */
 class Index {
 public:
-	Index(){}
+	Index(const std::string& db_file_dir): db_file_dir_(db_file_dir){}
 	void insert(IndexKey, IndexValue);
 	bool get(IndexKey, IndexValue&);
+
+	// TODO: construct from dbfile index
+	void constructFromDbFile() {}
+
 private:
-	map<IndexKey, IndexValue> store_;
+	map<IndexKey, IndexValue> db_file_dir_;
+	std::string dir_;
 	// size_t index_key_cnt_;
 private:
 	Index(const Index&) = delete;
