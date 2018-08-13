@@ -1,6 +1,7 @@
 // Copyright [2018] Alibaba Cloud All rights reserved
 #ifndef ENGINE_RACE_ENGINE_RACE_H_
 #define ENGINE_RACE_ENGINE_RACE_H_
+
 #include <string>
 #include "include/engine.h"
 
