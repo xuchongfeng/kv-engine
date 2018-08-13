@@ -9,11 +9,15 @@
 
 namespace polar_race {
 
+/*
+ * construct from dbfile index
+ * do not update when constructed;
+ */
 class Index {
 public:
 	Index(){}
 	void insert(IndexKey, IndexValue);
-	IndexValue get(IndexKey);
+	bool get(IndexKey, IndexValue&);
 private:
 	map<IndexKey, IndexValue> store_;
 	// size_t index_key_cnt_;
