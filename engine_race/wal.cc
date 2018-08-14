@@ -26,11 +26,12 @@ namespace polar_race {
 		std::lock_guard<std::mutex> lock(m_);
 		write(wal_file_fd_, (void *)walLogEntry, sizeof(walLogEntry));
 
-		int offset = lseek(wal_file_fd_, 0, SEEK_CUR);
+		size_t offset = lseek(wal_file_fd_, 0, SEEK_CUR);
 		write(wal_index_file_fd_, (void *)&offset, sizeof(offset));
 
-		write_entry_cnt_++;
-		write(wal_pos_file_fd_, (void*)&write_entry_cnt_, sizeof(write_entry_cnt_));
+		// write_entry_cnt_++;
+		char c = '0';
+		write(wal_pos_file_fd_, (void*)&c, 1);
 	}
 
 	bool Wal::needRecovery() {
@@ -50,8 +51,33 @@ namespace polar_race {
 
 	void Wal::recovery() {
 		// 1 读取位置文件，获取当前位置
+		int read_size = 40 * 1024 * 1024;
+		char* buffer = new char(read_size);
+		while (true) {
+			int size = read(wal_pos_file_fd_, buffer, read_size);
+			if (size == 0) {
+				break;
+			}
+
+			if (size == -1) {
+				printf("read pos file error\n");
+			}
+			write_entry_cnt_ += size;
+		}
+
+
 		// 2 读取索引文件，获取当前文件偏移位置
+		size_t index_offset = 4 * (write_entry_cnt_ - 1);
+		lseek(wal_index_file_fd_, index_offset, SEEK_SET);
+
 		// 3 读取日志文件，将数据写入memtable
+		// TODO: continue
+		while (true) {
+			int size = read(wal_index_file_fd_, buffer, read_size);
+			if (size == 0) {
+				break;
+			}
+		}
 	}
 }
 
